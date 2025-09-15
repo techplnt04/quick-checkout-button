@@ -1,0 +1,98 @@
+.quick-checkout-btn {
+    background-color: #ff6b35;
+    color: white !important;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 15px;
+    width: 100%;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.quick-checkout-btn:hover {
+    background-color: #e55a2b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    color: white !important;
+}
+
+.quick-checkout-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.quick-checkout-btn.variable-link,
+.quick-checkout-btn.grouped-link {
+    background-color: #007cba;
+}
+
+.quick-checkout-btn.variable-link:hover,
+.quick-checkout-btn.grouped-link:hover {
+    background-color: #005a87;
+}
+
+.quick-checkout-btn .btn-loading {
+    font-style: italic;
+}
+
+.quick-checkout-btn .loading-icon {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Single product page specific styles */
+.quick-checkout-single {
+    margin-top: 20px;
+    font-size: 16px;
+    padding: 15px 30px;
+    background: linear-gradient(45deg, #ff6b35, #ff8c42);
+}
+
+.quick-checkout-single:hover {
+    background: linear-gradient(45deg, #e55a2b, #e67635);
+}
+
+/* After cart button styles */
+.quick-checkout-after-cart {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .quick-checkout-btn {
+        font-size: 14px;
+        padding: 12px 20px;
+    }
+    
+    .quick-checkout-single {
+        font-size: 15px;
+        padding: 14px 25px;
+    }
+}
+
+/* Integration with WooCommerce styles */
+.woocommerce .quick-checkout-btn,
+.woocommerce-page .quick-checkout-btn {
+    margin-top: 15px;
+}
+
+.single-product .quick-checkout-btn {
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
