@@ -3,7 +3,7 @@
  * Plugin Name: Quick Checkout Button
  * Description: Adds a "Click to Checkout" button to shop page products and single product pages that redirects directly to checkout.
  * Version: 1.0.0
- * Author: Hannan
+ * Author: Techplnt
  * Author URI: https://github.com/techplnt04/
  * Plugin URI: https://github.com/techplnt04/quick-checkout-button
  * License: GPL v2 or later
@@ -224,10 +224,9 @@ class QuickCheckoutButton {
      */
     public function handle_quick_checkout() {
         // Verify nonce for security
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'quick_checkout_nonce')) {
+        if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'quick_checkout_nonce')) {
             wp_die(esc_html__('Security check failed', 'quick-checkout-button'));
         }
-        
         $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
         $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
         
@@ -270,14 +269,14 @@ class QuickCheckoutButton {
      */
     public function handle_quick_checkout_variable() {
         // Verify nonce for security
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'quick_checkout_nonce')) {
+        if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'quick_checkout_nonce')) {
             wp_die(esc_html__('Security check failed', 'quick-checkout-button'));
         }
         
         $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
         $variation_id = isset($_POST['variation_id']) ? intval($_POST['variation_id']) : 0;
         $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
-        $variation_data = isset($_POST['variation']) ? wc_clean($_POST['variation']) : array();
+        $variation_data = isset($_POST['variation']) ? map_deep(wp_unslash($_POST['variation']), 'sanitize_text_field') : array();
         
         if (!$product_id || !$variation_id) {
             wp_send_json_error(array(
