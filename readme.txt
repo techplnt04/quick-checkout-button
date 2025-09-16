@@ -1,5 +1,5 @@
 === Quick Checkout Button ===
-Contributors: hannan
+Contributors: techplnt, phpcoderhannan
 Tags: direct checkout, checkout, quick checkout, ecommerce
 Requires at least: 5.0
 Tested up to: 6.8
