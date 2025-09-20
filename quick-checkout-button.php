@@ -76,7 +76,7 @@ class TechplntQuickCheckoutButton {
         add_action('wp_ajax_nopriv_quick_checkout_variable', array($this, 'techplnt_handle_quick_checkout_variable'));
         
         // Enqueue scripts and styles
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'techplnt_enqueue_scripts'));
     }
     
     /**
@@ -323,7 +323,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Enqueue scripts and styles
      */
-    public function enqueue_scripts() {
+    public function techplnt_enqueue_scripts() {
         // Load on shop pages and single product pages
         if (!is_shop() && !is_product_category() && !is_product_tag() && !is_product()) {
             return;
