@@ -30,13 +30,13 @@ class TechplntQuickCheckoutButton {
     
     public function __construct() {
         // Hook into WordPress
-        add_action('init', array($this, 'init'));
+        add_action('init', array($this, 'techplnt_display_notice'));
     }
     
-    public function init() {
+    public function techplnt_display_notice() {
         // Check if WooCommerce is active
         if (!class_exists('WooCommerce')) {
-            add_action('admin_notices', array($this, 'woocommerce_missing_notice'));
+            add_action('admin_notices', array($this, 'techplnt_woocommerce_missing_notice'));
             return;
         }
 
@@ -93,7 +93,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Display notice if WooCommerce is not active
      */
-    public function woocommerce_missing_notice() {
+    public function techplnt_woocommerce_missing_notice() {
         echo '<div class="notice notice-error"><p>' . 
              esc_html__('Quick Checkout Button plugin requires WooCommerce to be installed and active.', 'techplnt-quick-checkout-button') . 
              '</p></div>';
