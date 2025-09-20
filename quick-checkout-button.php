@@ -22,11 +22,11 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('techplnt_QCB_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('techplnt_QCB_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('techplnt_QCB_VERSION', '1.0.0');
+define('TECHPLNT_QCB_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('TECHPLNT_QCB_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('TECHPLNT_QCB_VERSION', '1.0.0');
 
-class techplntQuickCheckoutButton {
+class TechplntQuickCheckoutButton {
     
     public function __construct() {
         // Hook into WordPress
@@ -354,4 +354,4 @@ class techplntQuickCheckoutButton {
 }
 
 // Initialize the plugin
-new techplntQuickCheckoutButton();
+new TechplntQuickCheckoutButton();
