@@ -8,7 +8,7 @@
  * Plugin URI: https://github.com/techplnt04/quick-checkout-button
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: techplnt-quick-checkout-button
+ * Text Domain: quick-checkout-button
  * Requires at least: 5.0
  * Requires PHP: 7.3
  * Requires Plugins: woocommerce
@@ -84,7 +84,7 @@ class TechplntQuickCheckoutButton {
      */
     public function techplnt_woocommerce_missing_notice() {
         echo '<div class="notice notice-error"><p>' . 
-             esc_html__('Quick Checkout Button plugin requires WooCommerce to be installed and active.', 'techplnt-quick-checkout-button') . 
+             esc_html__('Quick Checkout Button plugin requires WooCommerce to be installed and active.', 'quick-checkout-button') . 
              '</p></div>';
     }
     
@@ -150,7 +150,7 @@ class TechplntQuickCheckoutButton {
         
         $product_id = $product->get_id();
         $button_class = 'quick-checkout-btn quick-checkout-' . $context;
-        $button_text = esc_html__('Click to Checkout', 'techplnt-quick-checkout-button');
+        $button_text = esc_html__('Click to Checkout', 'quick-checkout-button');
         
         // Handle different product types
         if ($product->is_type('simple')) {
@@ -173,7 +173,7 @@ class TechplntQuickCheckoutButton {
         echo '<button class="' . esc_attr($button_class) . '" data-product-id="' . esc_attr($product_id) . '" data-product-type="simple">
                 <span class="btn-text">' . esc_html($button_text) . '</span>
                 <span class="btn-loading" style="display:none;">
-                    <i class="loading-icon">⏳</i> ' . esc_html__('Adding to cart...', 'techplnt-quick-checkout-button') . '
+                    <i class="loading-icon">⏳</i> ' . esc_html__('Adding to cart...', 'quick-checkout-button') . '
                 </span>
               </button>';
     }
@@ -187,7 +187,7 @@ class TechplntQuickCheckoutButton {
         if ($context === 'shop') {
             // On shop page, link to single product page for variation selection
             echo '<a href="' . esc_url(get_permalink($product_id)) . '" class="' . esc_attr($button_class) . ' variable-link">
-                    ' . esc_html__('Select Options & Checkout', 'techplnt-quick-checkout-button') . '
+                    ' . esc_html__('Select Options & Checkout', 'quick-checkout-button') . '
                   </a>';
         } else {
             // On single product page, show button that works with selected variations
@@ -195,10 +195,10 @@ class TechplntQuickCheckoutButton {
                          data-product-id="' . esc_attr($product_id) . '" 
                          data-product-type="variable"
                          disabled>
-                    <span class="btn-text">' . esc_html__('Select Options to Checkout', 'techplnt-quick-checkout-button') . '</span>
+                    <span class="btn-text">' . esc_html__('Select Options to Checkout', 'quick-checkout-button') . '</span>
                     <span class="btn-text-ready" style="display:none;">' . esc_html($button_text) . '</span>
                     <span class="btn-loading" style="display:none;">
-                        <i class="loading-icon">⏳</i> ' . esc_html__('Adding to cart...', 'techplnt-quick-checkout-button') . '
+                        <i class="loading-icon">⏳</i> ' . esc_html__('Adding to cart...', 'quick-checkout-button') . '
                     </span>
                   </button>';
         }
@@ -211,7 +211,7 @@ class TechplntQuickCheckoutButton {
         $product_id = $product->get_id();
         
         echo '<a href="' . esc_url(get_permalink($product_id)) . '" class="' . esc_attr($button_class) . ' grouped-link">
-                ' . esc_html__('Select Products & Checkout', 'techplnt-quick-checkout-button') . '
+                ' . esc_html__('Select Products & Checkout', 'quick-checkout-button') . '
               </a>';
     }
     
@@ -221,7 +221,7 @@ class TechplntQuickCheckoutButton {
     public function techplnt_handle_quick_checkout_single() {
         // Verify nonce for security
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'quick_checkout_nonce')) {
-            wp_die(esc_html__('Security check failed', 'techplnt-quick-checkout-button'));
+            wp_die(esc_html__('Security check failed', 'quick-checkout-button'));
         }
         
         $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
@@ -229,7 +229,7 @@ class TechplntQuickCheckoutButton {
         
         if (!$product_id) {
             wp_send_json_error(array(
-                'message' => esc_html__('Invalid product ID', 'techplnt-quick-checkout-button')
+                'message' => esc_html__('Invalid product ID', 'quick-checkout-button')
             ));
         }
         
@@ -237,7 +237,7 @@ class TechplntQuickCheckoutButton {
         $product = wc_get_product($product_id);
         if (!$product || !$product->is_in_stock()) {
             wp_send_json_error(array(
-                'message' => esc_html__('Product is not available', 'techplnt-quick-checkout-button')
+                'message' => esc_html__('Product is not available', 'quick-checkout-button')
             ));
         }
         
@@ -251,12 +251,12 @@ class TechplntQuickCheckoutButton {
             // Success - return checkout URL
             wp_send_json_success(array(
                 'checkout_url' => wc_get_checkout_url(),
-                'message' => esc_html__('Product added to cart successfully!', 'techplnt-quick-checkout-button')
+                'message' => esc_html__('Product added to cart successfully!', 'quick-checkout-button')
             ));
         } else {
             // Error adding to cart
             wp_send_json_error(array(
-                'message' => esc_html__('Could not add product to cart', 'techplnt-quick-checkout-button')
+                'message' => esc_html__('Could not add product to cart', 'quick-checkout-button')
             ));
         }
     }
@@ -267,7 +267,7 @@ class TechplntQuickCheckoutButton {
     public function techplnt_handle_quick_checkout_variable() {
         // Verify nonce for security
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'quick_checkout_nonce')) {
-            wp_die(esc_html__('Security check failed', 'techplnt-quick-checkout-button'));
+            wp_die(esc_html__('Security check failed', 'quick-checkout-button'));
         }
         
         $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
@@ -277,7 +277,7 @@ class TechplntQuickCheckoutButton {
         
         if (!$product_id || !$variation_id) {
             wp_send_json_error(array(
-                'message' => esc_html__('Invalid product or variation ID', 'techplnt-quick-checkout-button')
+                'message' => esc_html__('Invalid product or variation ID', 'quick-checkout-button')
             ));
         }
         
@@ -287,7 +287,7 @@ class TechplntQuickCheckoutButton {
         
         if (!$product || !$variation || !$variation->is_in_stock()) {
             wp_send_json_error(array(
-                'message' => esc_html__('Selected variation is not available', 'techplnt-quick-checkout-button')
+                'message' => esc_html__('Selected variation is not available', 'quick-checkout-button')
             ));
         }
         
@@ -300,11 +300,11 @@ class TechplntQuickCheckoutButton {
         if ($cart_item_key) {
             wp_send_json_success(array(
                 'checkout_url' => wc_get_checkout_url(),
-                'message' => esc_html__('Product variation added to cart successfully!', 'techplnt-quick-checkout-button')
+                'message' => esc_html__('Product variation added to cart successfully!', 'quick-checkout-button')
             ));
         } else {
             wp_send_json_error(array(
-                'message' => esc_html__('Could not add product variation to cart', 'techplnt-quick-checkout-button')
+                'message' => esc_html__('Could not add product variation to cart', 'quick-checkout-button')
             ));
         }
     }
@@ -341,10 +341,10 @@ class TechplntQuickCheckoutButton {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('quick_checkout_nonce'),
             'i18n' => array(
-                'error_generic' => esc_html__('Something went wrong', 'techplnt-quick-checkout-button'),
-                'error_network' => esc_html__('Network error occurred', 'techplnt-quick-checkout-button'),
-                'error_select_options' => esc_html__('Please select product options first', 'techplnt-quick-checkout-button'),
-                'error_select_all_options' => esc_html__('Please select all product options first', 'techplnt-quick-checkout-button'),
+                'error_generic' => esc_html__('Something went wrong', 'quick-checkout-button'),
+                'error_network' => esc_html__('Network error occurred', 'quick-checkout-button'),
+                'error_select_options' => esc_html__('Please select product options first', 'quick-checkout-button'),
+                'error_select_all_options' => esc_html__('Please select all product options first', 'quick-checkout-button'),
             )
         ));
     }
