@@ -4,7 +4,7 @@
  * Description: Adds a "Click to Checkout" button to shop page products and single product pages that redirects directly to checkout.
  * Version: 1.0.0
  * Author: Techplnt
- * Author URI: https://github.com/techplnt04/
+ * Author URI: https://github.com/techplnt04
  * Plugin URI: https://github.com/techplnt04/quick-checkout-button
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
