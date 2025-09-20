@@ -55,8 +55,6 @@ class TechplntQuickCheckoutButton {
             }
         }, 10);
         
-        // Load text domain for translations
-        add_action('plugins_loaded', array($this, 'load_textdomain'));
         
         // Add the checkout button to shop page products
         add_action('woocommerce_after_shop_loop_item', array($this, 'techplnt_add_quick_checkout_button_shop'), 15);
@@ -79,16 +77,7 @@ class TechplntQuickCheckoutButton {
         add_action('wp_enqueue_scripts', array($this, 'techplnt_enqueue_scripts'));
     }
     
-    /**
-     * Load plugin text domain for translations
-     */
-    public function load_textdomain() {
-        load_plugin_textdomain(
-            'techplnt-quick-checkout-button',
-            false,
-            dirname(plugin_basename(__FILE__)) . '/languages/'
-        );
-    }
+  
     
     /**
      * Display notice if WooCommerce is not active
