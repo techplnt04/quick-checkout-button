@@ -22,21 +22,21 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('TECHPLNT_QCB_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('TECHPLNT_QCB_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('TECHPLNT_QCB_VERSION', '1.0.0');
+define('QUICCHBU_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('QUICCHBU_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('QUICCHBU_VERSION', '1.0.0');
 
-class TechplntQuickCheckoutButton {
+class QUICCHBU_Admin {
     
     public function __construct() {
         // Hook into WordPress
-        add_action('init', array($this, 'techplnt_display_notice'));
+        add_action('init', array($this, 'quicchbu_display_notice'));
     }
     
-    public function techplnt_display_notice() {
+    public function quicchbu_display_notice() {
         // Check if WooCommerce is active
         if (!class_exists('WooCommerce')) {
-            add_action('admin_notices', array($this, 'techplnt_woocommerce_missing_notice'));
+            add_action('admin_notices', array($this, 'quicchbu_woocommerce_missing_notice'));
             return;
         }
 
@@ -57,24 +57,24 @@ class TechplntQuickCheckoutButton {
         
         
         // Add the checkout button to shop page products
-        add_action('woocommerce_after_shop_loop_item', array($this, 'techplnt_add_quick_checkout_button_shop'), 15);
+        add_action('woocommerce_after_shop_loop_item', array($this, 'quicchbu_display_button_on_shop'), 15);
         
         // Add the checkout button to single product pages
-        add_action('woocommerce_single_product_summary', array($this, 'techplnt_add_quick_checkout_button_single'), 35);
+        add_action('woocommerce_single_product_summary', array($this, 'quicchbu_display_on_single'), 35);
         
         // Add button after add to cart on single product page (alternative position)
-        add_action('woocommerce_after_add_to_cart_button', array($this, 'techplnt_add_quick_checkout_button_after_cart'), 10);
+        add_action('woocommerce_after_add_to_cart_button', array($this, 'quicchbu_display_after_cart'), 10);
         
         // Handle AJAX request for adding to cart and redirecting
-        add_action('wp_ajax_quick_checkout', array($this, 'techplnt_handle_quick_checkout_single'));
-        add_action('wp_ajax_nopriv_quick_checkout', array($this, 'techplnt_handle_quick_checkout_single'));
+        add_action('wp_ajax_quick_checkout', array($this, 'quicchbu_save_ajax_single_data'));
+        add_action('wp_ajax_nopriv_quick_checkout', array($this, 'quicchbu_save_ajax_single_data'));
         
         // Handle variable product quick checkout
-        add_action('wp_ajax_quick_checkout_variable', array($this, 'techplnt_handle_quick_checkout_variable'));
-        add_action('wp_ajax_nopriv_quick_checkout_variable', array($this, 'techplnt_handle_quick_checkout_variable'));
+        add_action('wp_ajax_quick_checkout_variable', array($this, 'quicchbu_save_ajax_variable_data'));
+        add_action('wp_ajax_nopriv_quick_checkout_variable', array($this, 'quicchbu_save_ajax_variable_data'));
         
         // Enqueue scripts and styles
-        add_action('wp_enqueue_scripts', array($this, 'techplnt_enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'quicchbu_enqueue_scripts'));
     }
     
   
@@ -82,7 +82,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Display notice if WooCommerce is not active
      */
-    public function techplnt_woocommerce_missing_notice() {
+    public function quicchbu_woocommerce_missing_notice() {
         echo '<div class="notice notice-error"><p>' . 
              esc_html__('Quick Checkout Button plugin requires WooCommerce to be installed and active.', 'quick-checkout-button') . 
              '</p></div>';
@@ -91,7 +91,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Add quick checkout button to shop page products
      */
-    public function techplnt_add_quick_checkout_button_shop() {
+    public function quicchbu_display_button_on_shop() {
         global $product;
         
         // Only show on shop page and product archives
@@ -99,13 +99,13 @@ class TechplntQuickCheckoutButton {
             return;
         }
         
-        $this->techplnt_render_quick_checkout_button($product, 'shop');
+        $this->quicchbu_render_qc_button($product, 'shop');
     }
     
     /**
      * Add quick checkout button to single product page
      */
-    public function techplnt_add_quick_checkout_button_single() {
+    public function quicchbu_display_on_single() {
         global $product;
         
         // Only show on single product pages
@@ -113,13 +113,13 @@ class TechplntQuickCheckoutButton {
             return;
         }
         
-        $this->techplnt_render_quick_checkout_button($product, 'single');
+        $this->quicchbu_render_qc_button($product, 'single');
     }
     
     /**
      * Add quick checkout button after add to cart button on single product page
      */
-    public function techplnt_add_quick_checkout_button_after_cart() {       
+    public function quicchbu_display_after_cart() {       
         global $product;
         
         // Only show on single product pages
@@ -131,13 +131,13 @@ class TechplntQuickCheckoutButton {
         // You can comment this out if you want buttons in both positions
         return;
         
-        $this->techplnt_render_quick_checkout_button($product, 'after-cart');
+        $this->quicchbu_render_qc_button($product, 'after-cart');
     }
     
     /**
      * Render the quick checkout button based on product type and context
      */
-    private function techplnt_render_quick_checkout_button($product, $context = 'shop') {
+    private function quicchbu_render_qc_button($product, $context = 'shop') {
         // Don't show for out of stock products
         if (!$product->is_in_stock()) {
             return;
@@ -154,22 +154,22 @@ class TechplntQuickCheckoutButton {
         
         // Handle different product types
         if ($product->is_type('simple')) {
-            $this->techplnt_render_simple_checkout_button($product_id, $button_class, $button_text);
+            $this->quicchbu_render_simple_product($product_id, $button_class, $button_text);
         } elseif ($product->is_type('variable')) {
-            $this->techplnt_render_variable_checkout_button($product, $button_class, $button_text, $context);
+            $this->quicchbu_render_variable_product($product, $button_class, $button_text, $context);
         } elseif ($product->is_type('grouped')) {
             // For grouped products, link to single product page for selection
-            $this->techplnt_render_grouped_checkout_button($product, $button_class);
+            $this->quicchbu_render_grouped_product($product, $button_class);
         } else {
             // Default behavior for other product types
-            $this->techplnt_render_simple_checkout_button($product_id, $button_class, $button_text);
+            $this->quicchbu_render_simple_checkout_button($product_id, $button_class, $button_text);
         }
     }
     
     /**
      * Render simple product checkout button
      */
-    private function techplnt_render_simple_checkout_button($product_id, $button_class, $button_text) {
+    private function quicchbu_render_simple_product($product_id, $button_class, $button_text) {
         echo '<button class="' . esc_attr($button_class) . '" data-product-id="' . esc_attr($product_id) . '" data-product-type="simple">
                 <span class="btn-text">' . esc_html($button_text) . '</span>
                 <span class="btn-loading" style="display:none;">
@@ -181,7 +181,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Render variable product checkout button
      */
-    private function techplnt_render_variable_checkout_button($product, $button_class, $button_text, $context) {
+    private function quicchbu_render_variable_product($product, $button_class, $button_text, $context) {
         $product_id = $product->get_id();
         
         if ($context === 'shop') {
@@ -207,7 +207,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Render grouped product checkout button
      */
-    private function techplnt_render_grouped_checkout_button($product, $button_class) {
+    private function quicchbu_render_grouped_product($product, $button_class) {
         $product_id = $product->get_id();
         
         echo '<a href="' . esc_url(get_permalink($product_id)) . '" class="' . esc_attr($button_class) . ' grouped-link">
@@ -218,7 +218,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Handle AJAX request for quick checkout (simple products)
      */
-    public function techplnt_handle_quick_checkout_single() {
+    public function quicchbu_save_ajax_single_data() {
         // Verify nonce for security
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'quick_checkout_nonce')) {
             wp_die(esc_html__('Security check failed', 'quick-checkout-button'));
@@ -264,7 +264,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Handle AJAX request for variable product quick checkout
      */
-    public function techplnt_handle_quick_checkout_variable() {
+    public function quicchbu_save_ajax_variable_data() {
         // Verify nonce for security
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'quick_checkout_nonce')) {
             wp_die(esc_html__('Security check failed', 'quick-checkout-button'));
@@ -312,7 +312,7 @@ class TechplntQuickCheckoutButton {
     /**
      * Enqueue scripts and styles
      */
-    public function techplnt_enqueue_scripts() {
+    public function quicchbu_enqueue_scripts() {
         // Load on shop pages and single product pages
         if (!is_shop() && !is_product_category() && !is_product_tag() && !is_product()) {
             return;
@@ -321,18 +321,18 @@ class TechplntQuickCheckoutButton {
         // Enqueue CSS
         wp_enqueue_style(
             'quick-checkout-styles',
-            TECHPLNT_QCB_PLUGIN_URL . 'assets/css/quick-checkout-styles.css',
+            QUICCHBU_PLUGIN_URL . 'assets/css/quick-checkout-styles.css',
             array(),
-            TECHPLNT_QCB_VERSION,
+            QUICCHBU_VERSION,
             'all'
         );
         
         // Enqueue JS
         wp_enqueue_script(
             'quick-checkout-scripts',
-            TECHPLNT_QCB_PLUGIN_URL . 'assets/js/quick-checkout-scripts.js',
+            QUICCHBU_PLUGIN_URL . 'assets/js/quick-checkout-scripts.js',
             array('jquery'),
-            TECHPLNT_QCB_VERSION,
+            QUICCHBU_VERSION,
             true
         );
         
@@ -351,5 +351,5 @@ class TechplntQuickCheckoutButton {
 }
 
 // Initialize the plugin
-new TechplntQuickCheckoutButton();
+new QUICCHBU_Admin();
 ?>
